@@ -1,0 +1,421 @@
+* {
+    font-family: "Exo", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-size: 3vh
+}
+
+body,
+html {
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden
+}
+
+#inicioSesion {
+    background-image: url(img/fondo_index.jpg);
+    background-size: cover;
+}
+
+form {
+    background-color: rgba(255, 255, 255, 0.9);
+    /* Fondo blanco con 90% de opacidad */
+    /* cambiar en query */
+    width: 50%;
+    height: 70%;
+    margin: auto;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    /* editar en media query */
+    display: flex;
+}
+
+header {
+    width: 100vw;
+    height: 10vh;
+    background-color: #bb8756;
+}
+
+#contenedor {
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+}
+
+.btn-primary,
+.form-control {
+    /* cambiar query */
+    width: 90% !important;
+    margin: auto;
+}
+
+label {
+    margin-top: 3vh;
+    margin-bottom: 2vh;
+}
+
+button {
+    margin-top: 3vh !important;
+    margin-bottom: 3vh !important;
+}
+
+#logo {
+    height: auto;
+    width: 90%;
+    /* margin-top: 2vh; */
+}
+
+#pequeño {
+    /* cambiar en query */
+    align-content: center;
+    height: 100%;
+    width: 40%;
+}
+
+#grande {
+    /* cambiar en query */
+    height: 100%;
+    width: 60%;
+    align-content: center;
+}
+
+.body2 {
+    background-color: #EBFFDB;
+    min-height: 100vh !important;
+}
+
+.container {
+    text-align: center;
+}
+
+.container_img {
+    display: flex;
+    width: 100% !important;
+    max-width: none !important;
+    height: 40vh !important;
+    justify-content: center;
+    /* Centra horizontalmente */
+    align-items: center;
+    /* Centra verticalmente */
+    min-height: 100%;
+    width: auto;
+    /* Asegura que el contenedor tenga el mismo tamaño que la imagen */
+}
+
+.container_img img {
+    min-width: 100% !important;
+    /* Asegura que la imagen no desborde su contenedor */
+    height: auto;
+    /* Mantiene la proporción de la imagen */
+    border-radius: 10px;
+    /* Opcional: Añade bordes redondeados a la imagen */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    /* Opcional: Sombra para realzar la imagen */
+}
+
+.col-md-5 .formImgComedor{
+    width: 69% !important;
+}
+
+.container_img {
+    width: 100%;
+    /* Ajusta el tamaño del contenedor al 100% del espacio disponible */
+    max-width: 300px;
+    /* Tamaño máximo del contenedor, ajustable según tus preferencias */
+    height: 300px;
+    /* Altura fija del contenedor */
+    overflow: hidden;
+    /* Oculta cualquier parte de la imagen que sobresalga del contenedor */
+    border-radius: 10px;
+    /* Opcional: redondea las esquinas del contenedor */
+    justify-content: space-between;
+    display: flex;
+}
+
+.container_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ajusta la imagen para llenar el contenedor manteniendo proporciones */
+    border-radius: 10px;
+    /* Para que coincida con el borde del contenedor */
+    justify-content: space-between;
+}
+
+.container_img a {
+    width: 100%;
+    height: 100%;
+}
+
+.bienvenido {
+    margin-bottom: 3vh;
+    margin-top: 5vh;
+}
+
+.labelTipo {
+    display: inline;
+}
+
+.row {
+    justify-content: center !important;
+}
+
+nav,
+ul {
+    height: 100% !important;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 2vw;
+    margin-left: 2vw
+}
+
+ul {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex;
+}
+
+p {
+    font-weight: bolder;
+}
+
+#cerrarSesion,
+p {
+    margin: 0 !important;
+}
+
+.botonImg {
+    width: 100% !important;
+    height: 100%;
+    border: none;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+    border-radius: 10px;
+}
+
+.formImg {
+    width: 100%;
+    box-shadow: none;
+}
+
+.formImgComedor{
+    width: 89%;
+    box-shadow: none;
+}
+
+
+
+#ubicacion {
+    margin-top: 2vh
+}
+
+.btn-danger {
+    margin-left: 2vw;
+    margin-bottom: 0 !important;
+}
+
+.grow img {
+    transition: 1s ease;
+}
+
+.grow img:hover {
+    -webkit-transform: scale(1.2);
+    -ms-transform: scale(1.2);
+    transform: scale(1.2);
+    transition: 1s ease;
+}
+
+.barra {
+    height: 12vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: #EBFFDB;
+}
+
+#bug {
+    color: #bb8756 !important;
+}
+
+.d-flex {
+    padding-right: 1.5vw;
+    padding-left: 1.5vw;
+    background-color: none !important;
+    box-shadow: none;
+    background-color: transparent;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.barra * {
+    font-size: 2.5vh;
+}
+
+.dropdown-item {
+    background-color: white !important;
+}
+
+.dropdown-item:hover {
+    background-color: lightgray !important;
+}
+
+table {
+    width: 90vw;
+    margin-left: 5vw;
+    margin-right: 5vw;
+}
+
+#historial {
+    margin-left: 5vw;
+    margin-top: 1vh;
+    margin-bottom: 3vh;
+}
+
+.scrollable-dropdown {
+    min-height: 186px !important;
+    /* Adjust this height as needed */
+    overflow-y: auto;
+}
+
+table * {
+    text-align: center;
+    border: lightgray 2px solid !important;
+}
+
+.centrar {
+    text-align: center;
+}
+
+#formFecha {
+    width: 100%;
+}
+
+#inputFecha {
+    margin: 1vw;
+    border: none;
+}
+
+#btnFecha {
+    margin: 1vw;
+}
+
+#bajar {
+    margin-top: 1vh !important;
+}
+
+#noResultado {
+    margin-left: 5vw !important;
+    font-weight: normal !important;
+}
+
+#divReiniciar {
+    display: flex;
+    width: 100vw;
+    justify-content: space-between;
+    padding-right: 2vw;
+    height: 10vh !important;
+}
+
+.botonMesa {
+    border: none !important
+}
+
+#divMesa {
+    display: flex;
+    justify-content: space-between;
+}
+
+#centrar {
+    margin-top: 3vh;
+    margin-right: 5vw;
+}
+
+footer {
+    min-height: 8vh;
+}
+
+/* Diseño responsive */
+@media (max-width: 900px) {
+    * {
+        font-size: 2.5vh;
+    }
+    form {
+        display: block;
+        width: 80%;
+    }
+    #grande {
+        width: 100%;
+        height: 60%;
+    }
+    #pequeño {
+        width: 100%;
+        height: 30%;
+    }
+    #logo {
+        width: 80%;
+    }
+    body,
+    html {
+        min-height: 100vh
+    }
+    header * {
+        font-size: 1.8vh !important
+    }
+    .btn-danger {
+        margin-bottom: 2vh !important;
+    }
+    table * {
+        font-size: 1.7vh !important;
+    }
+    .ocultarSala {
+        display: none;
+    }
+    .show {
+        background-color: #EBFFDB;
+    }
+    .navbar-nav {
+        margin-left: 3vw !important;
+    }
+    .dropdown-item {
+        background-color: #EBFFDB !important
+    }
+    ul.dropdown-menu {
+        border: none !important;
+    }
+    #inputFecha {
+        margin-left: 7vw;
+    }
+    #centrar {
+        font-size: 3vh;
+        margin-top: 4vh;
+        margin-left: 4vw
+    }
+    .formImg{
+        width: 80%;
+    }
+
+    .botonImg{
+        background-color: transparent;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .mesa {
+        width: 50% !important;
+    }
+    .botonImg .imagen{
+        width: 50%;
+        height: 76%;
+        box-shadow: none;
+    }
+
+    .col-md-4 .formImgComedor, .col-md-5 .formImgComedor{
+        width: 55% !important;
+    }
+}
