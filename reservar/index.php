@@ -44,7 +44,7 @@ if (isset($_SESSION['id_camarero'])) {
             <button class="btn btn-danger">Volver</button>
         </a>
         <div class="container">
-            <h3>Selecciona una sala</h3>
+            <h3>Selecciona una sala donde reservar</h3>
             <div class="row">
                 <?php
                 foreach ($result as $fila) {

@@ -1,5 +1,10 @@
 <?php
 session_start();
+if (!isset($_SESSION['id_camarero'])) {
+    header("Location: ../index.php");
+    exit();
+}
+
 if (isset($_SESSION['success']) && $_SESSION['success']) {
     unset($_SESSION['success']);
     $user = htmlspecialchars($_SESSION['usuario']);

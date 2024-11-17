@@ -2,41 +2,26 @@
 session_start();
 include_once '../procesos/conexion.php';
 
-// Obtener los filtros de la solicitud
 $fechaFiltro = isset($_GET['fecha']) ? mysqli_real_escape_string($conn, $_GET['fecha']) : '';
 $salaFiltro = isset($_GET['sala']) ? intval($_GET['sala']) : '';
 $mesaFiltro = isset($_GET['mesa']) ? intval($_GET['mesa']) : '';
-$camareroFiltro = isset($_GET['camarero']) ? intval($_GET['camarero']) : '';
 
-// Construir la consulta con filtros
-$sql = "SELECT r.id_reserva, m.id_mesa, s.nombre_sala AS sala, e.nombre AS estado, r.fecha_inicio, r.fecha_fin, c.nombre AS camarero
-        FROM reserva r
-        JOIN mesa m ON r.id_mesa = m.id_mesa
-        JOIN sala s ON m.id_sala = s.id_sala
-        JOIN estados e ON m.id_estado = e.id_estado
-        JOIN camarero c ON r.id_camarero = c.id_camarero
+$sql = "SELECT m.*, s.*
+        FROM mesa m inner join estados s on s.id_estado = m.id_estado
         WHERE 1=1";
 
-if ($fechaFiltro) {
-    $sql .= " AND DATE(r.fecha_inicio) = '$fechaFiltro'";
-}
 if ($salaFiltro) {
-    $sql .= " AND m.id_sala = $salaFiltro";
+    $sql .= " AND id_sala = $salaFiltro";
 }
 if ($mesaFiltro) {
-    $sql .= " AND r.id_mesa = $mesaFiltro";
-}
-if ($camareroFiltro) {
-    $sql .= " AND r.id_camarero = $camareroFiltro";
+    $sql .= " AND id_mesa = $mesaFiltro";
 }
 
-$sql .= " ORDER BY r.fecha_inicio ASC";
+$sql .= " ORDER BY id_mesa ASC";
 
 $result = mysqli_query($conn, $sql);
 
-// Obtener listas para filtros
 $salas = mysqli_query($conn, "SELECT * FROM sala");
-$camareros = mysqli_query($conn, "SELECT * FROM camarero");
 ?>
 
 <!DOCTYPE html>
@@ -55,24 +40,17 @@ $camareros = mysqli_query($conn, "SELECT * FROM camarero");
         <form action="" method="GET" class="row g-3 mb-4">
 
             <div class="col-md-3">
-                <select name="camarero" id="camarero" class="form-select">
-                    <option value="">Seleccionar Camarero</option>
-                    <?php while ($row = mysqli_fetch_assoc($camareros)) { ?>
-                        <option value="<?php echo $row['id_camarero']; ?>" <?php if ($camareroFiltro == $row['id_camarero']) echo 'selected'; ?>>
-                            <?php echo $row['nombre']; ?>
-                        </option>
-                    <?php } ?>
-                </select>
-            </div>
-
-            <div class="col-md-3">
                 <select name="sala" id="sala" class="form-select">
                     <option value="">Seleccionar Sala</option>
-                    <?php while ($row = mysqli_fetch_assoc($salas)) { ?>
+                    <?php
+                    while ($row = mysqli_fetch_assoc($salas)) {
+                    ?>
                         <option value="<?php echo $row['id_sala']; ?>" <?php if ($salaFiltro == $row['id_sala']) echo 'selected'; ?>>
                             <?php echo $row['nombre_sala']; ?>
                         </option>
-                    <?php } ?>
+                    <?php
+                    }
+                    ?>
                 </select>
             </div>
 
@@ -82,14 +60,10 @@ $camareros = mysqli_query($conn, "SELECT * FROM camarero");
                 </select>
             </div>
 
-            <div class="col-md-3">
-                <input type="date" name="fecha" class="form-control" value="<?php echo $fechaFiltro; ?>" placeholder="Fecha">
-            </div>
-
             <div class="col-md-12 text-end">
                 <button type="submit" class="btn btn-primary">Filtrar</button>
-                <a href="./reservas.php" class="btn btn-secondary">Limpiar Filtros</a>
-                <a href="./index.php" style="color:white; text-decoration:none;" class="btn btn-danger">volver</a>
+                <a href="./index.php" class="btn btn-secondary">Limpiar Filtros</a>
+                <a href="../preinicio.php" style="color:white; text-decoration:none;" class="btn btn-danger">volver</a>
             </div>
 
         </form>
@@ -97,11 +71,9 @@ $camareros = mysqli_query($conn, "SELECT * FROM camarero");
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>ID Mesa</th>
-                    <th>Sala</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Fin</th>
-                    <th>Camarero</th>
+                    <th>Mesa</th>
+                    <th>Estado</th>
+                    <th>Nº sillas</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -112,13 +84,11 @@ $camareros = mysqli_query($conn, "SELECT * FROM camarero");
                 ?>
                         <tr>
                             <td><?php echo $row['id_mesa']; ?></td>
-                            <td><?php echo $row['sala']; ?></td>
-                            <td><?php echo $row['fecha_inicio']; ?></td>
-                            <td><?php echo $row['fecha_fin']; ?></td>
-                            <td><?php echo $row['camarero']; ?></td>
+                            <td><?php echo $row['nombre']; ?></td>
+                            <td><?php echo $row['num_sillas']; ?></td>
                             <td>
-                                <a href="editar_reserva.php?id=<?php echo $row['id_reserva']; ?>" class="btn btn-sm btn-primary">Editar</a>
-                                <a href="./procesos/eliminar_reserva.php?id=<?php echo $row['id_reserva']; ?>" class="btn btn-sm btn-danger">Eliminar</a>
+                                <a href="editar_mesa.php?id=<?php echo $row['id_mesa']; ?>" class="btn btn-sm btn-primary">Editar</a>
+                                <!-- <a href="eliminar_mesa.php?id=<?php echo $row['id_mesa']; ?>" class="btn btn-sm btn-danger">Eliminar</a> -->
                             </td>
                         </tr>
                     <?php
@@ -136,20 +106,19 @@ $camareros = mysqli_query($conn, "SELECT * FROM camarero");
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const salaSelect = document.getElementById('sala');
-        const mesaSelect = document.getElementById('mesa');
-        const mesaFiltro = "<?php echo $mesaFiltro; ?>";
+        salaSelect = document.getElementById('sala');
+        mesaSelect = document.getElementById('mesa');
+        mesaFiltro = "<?php echo $mesaFiltro; ?>";
 
-        // Función para cargar las mesas según la sala seleccionada
         function cargarMesas(salaId, mesaSeleccionada) {
             mesaSelect.innerHTML = '<option value="">Seleccionar Mesa</option>';
 
             if (salaId) {
-                fetch(`./procesos/obtener_mesas.php?sala=${salaId}`)
+                fetch(`./obtener_mesas.php?sala=${salaId}`)
                     .then(response => response.json())
                     .then(data => {
                         data.forEach(mesa => {
-                            const option = document.createElement('option');
+                            option = document.createElement('option');
                             option.value = mesa.id_mesa;
                             option.textContent = `Mesa ${mesa.id_mesa}`;
                             if (mesaSeleccionada && mesaSeleccionada == mesa.id_mesa) {
@@ -162,12 +131,10 @@ $camareros = mysqli_query($conn, "SELECT * FROM camarero");
             }
         }
 
-        // Cargar mesas al cambiar la sala seleccionada
         salaSelect.addEventListener('change', () => {
             cargarMesas(salaSelect.value, null);
         });
 
-        // Cargar mesas al cargar la página si hay una sala seleccionada
         if (salaSelect.value) {
             cargarMesas(salaSelect.value, mesaFiltro);
         }

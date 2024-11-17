@@ -119,7 +119,7 @@ if (!isset($_POST['id_tipoSala'])) {
                                                                                                                                 } elseif ($fila['num_sillas'] == 7 || $fila['num_sillas'] == 8) {
                                                                                                                                     echo $estado . 8;
                                                                                                                                 } elseif ($fila['num_sillas'] == 9 || $fila['num_sillas'] == 10) {
-                                                                                                                                    echo $estados . 10;
+                                                                                                                                    echo $estado . 10;
                                                                                                                                 }
                                                                                                                                 ?>.png" alt=""></button>
                     </form>

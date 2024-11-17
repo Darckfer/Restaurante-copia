@@ -81,6 +81,6 @@ if (isset($_SESSION['id_camarero'])) {
 <?php
 } else {
     // Usuario no autenticado - Redirigir al inicio de sesión
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit; // Siempre es buena práctica usar exit después de redirigir
 }
