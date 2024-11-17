@@ -18,7 +18,19 @@ if (isset($_SESSION['success']) && $_SESSION['success']) {
 </head>
 
 <body class="body2">
-    <?php include './header.php' ?>
+    <header>
+        <nav>
+            <div class="sesionIniciada">
+                <p>Usuario: <?php echo $_SESSION['nombre'] ?></p>
+            </div>
+            <div class="cerrarSesion">
+
+                <a href="./procesos/logout.php">
+                    <button type="submit" class="btn btn-dark" id="cerrarSesion">Cerrar Sesión</button>
+                </a>
+            </div>
+        </nav>
+    </header>
     <div class="container">
         <br>
         <br>

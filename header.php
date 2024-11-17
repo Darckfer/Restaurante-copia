@@ -5,6 +5,9 @@
       <p>Usuario: <?php echo $_SESSION['nombre'] ?></p>
     </div>
     <div class="cerrarSesion">
+      <a id="bug" href="./reservas.php">
+        <button type="submit" class="btn btn-light" id="cerrarSesion">reservas</button>
+      </a>
       <a id="bug" href="../ocupar/filtros.php">
         <button type="submit" class="btn btn-light" id="cerrarSesion">Filtrar</button>
       </a>

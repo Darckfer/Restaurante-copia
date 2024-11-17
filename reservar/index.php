@@ -40,8 +40,10 @@ if (isset($_SESSION['id_camarero'])) {
                 </div>
             </nav>
         </header>
+        <a href="../preinicio.php">
+            <button class="btn btn-danger">Volver</button>
+        </a>
         <div class="container">
-            <br>
             <h3>Selecciona una sala</h3>
             <div class="row">
                 <?php

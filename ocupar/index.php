@@ -23,8 +23,10 @@ if (isset($_SESSION['id_camarero'])) {
 
     <body class="body2">
         <?php include '../header.php' ?>
+        <a href="../preinicio.php">
+            <button class="btn btn-danger">Volver</button>
+        </a>
         <div class="container">
-            <h1 class="bienvenido">Bienvenido, <?php echo $_SESSION['nombre']; ?>!</h1>
             <h3>Selecciona una sala:</h3>
             <div class="row">
                 <?php

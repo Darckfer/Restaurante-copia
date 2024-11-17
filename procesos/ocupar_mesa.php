@@ -9,7 +9,34 @@ if (isset($_SESSION['id_camarero'])) {
     $idMesa = mysqli_real_escape_string($conn, trim($_POST['id_mesa']));
     $num_sillas = mysqli_real_escape_string($conn, trim($_POST['num_sillas']));
     $num_sillas_real = mysqli_real_escape_string($conn, trim($_POST['num_sillas_real']));
-    if ($_POST['libre'] == 0) {
+
+    $sqlReservaSolapada = "SELECT * FROM reserva WHERE id_mesa = ? AND ((fecha_inicio <= NOW() AND fecha_fin >= NOW()) 
+    OR (fecha_inicio BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 2 HOUR)) OR (fecha_fin BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 2 HOUR))) LIMIT 1";
+    $stmtReserva = mysqli_prepare($conn, $sqlReservaSolapada);
+    mysqli_stmt_bind_param($stmtReserva, 'i', $idMesa);
+    mysqli_stmt_execute($stmtReserva);
+    $resultReserva = mysqli_stmt_get_result($stmtReserva);
+
+    if (mysqli_num_rows($resultReserva) > 0) {
+        $rowReserva = mysqli_fetch_assoc($resultReserva);
+        $fechaFinReserva = date('H:i', strtotime($rowReserva['fecha_fin']));
+        if ($rowReserva['fecha_fin'] > date("Y-m-d H:i:s")) {
+            $_SESSION['errorReservaFutura'] = true;
+            $_SESSION['mensajeReserva'] = "La mesa ya tiene una reserva que termina a las " . $fechaFinReserva . ".";
+?>
+            <form action="../ocupar/mesa.php" method="POST" name="formulario">
+                <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
+                <input type="hidden" name="id_sala" value="<?php echo $idSala ?>">
+            </form>
+            <script language="JavaScript">
+                document.formulario.submit();
+            </script>
+            <?php
+            exit();
+        }
+    }
+
+    if ($_POST['libre'] == 1) {
         mysqli_autocommit($conn, false);
 
         mysqli_begin_transaction($conn, MYSQLI_TRANS_START_READ_WRITE);
@@ -39,10 +66,10 @@ if (isset($_SESSION['id_camarero'])) {
                     mysqli_stmt_close($stmtLimitSillas);
                 }
 
-                $sql = "UPDATE mesa SET libre = ?, num_sillas = ? WHERE id_mesa = ?";
+                $sql = "UPDATE mesa SET id_estado = ?, num_sillas = ? WHERE id_mesa = ?";
                 $stmt = mysqli_stmt_init($conn);
                 mysqli_stmt_prepare($stmt, $sql);
-                $reservado = 1;
+                $reservado = 2;
                 mysqli_stmt_bind_param($stmt, 'ssi', $reservado, $num_sillas, $idMesa);
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_close($stmt);
@@ -56,11 +83,9 @@ if (isset($_SESSION['id_camarero'])) {
 
                 mysqli_commit($conn);
                 mysqli_close($conn);
-                $_SESSION['errorStock'] = false;
-                $_SESSION['successOcupat'] = true;
             } else {
                 $_SESSION['errorStock'] = true;
-?>
+            ?>
                 <form action="../ocupar/mesa.php" method="POST" name="formulario">
                     <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
                     <input type="hidden" name="id_sala" value="<?php echo $idSala ?>">
@@ -69,7 +94,9 @@ if (isset($_SESSION['id_camarero'])) {
                     document.formulario.submit();
                 </script>
             <?php
+                exit();
             }
+            $_SESSION['successOcupat'] = true;
             ?>
             <form action="../ocupar/mesa.php" method="POST" name="formulario">
                 <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
@@ -85,6 +112,34 @@ if (isset($_SESSION['id_camarero'])) {
             echo "Error: " . $e->getMessage();
             mysqli_close($conn);
             exit();
+        }
+    } elseif ($_POST['libre'] == 3) {
+        try {
+            $_SESSION['successDesocupat'] = true;
+            $sql = "UPDATE mesa SET id_estado = ?, num_sillas = ? WHERE id_mesa = ?";
+            $stmt = mysqli_stmt_init($conn);
+            mysqli_stmt_prepare($stmt, $sql);
+            $reservado = 1;
+            mysqli_stmt_bind_param($stmt, 'isi', $reservado, $num_sillas, $idMesa);
+            mysqli_stmt_execute($stmt);
+            mysqli_commit($conn);
+            mysqli_stmt_close($stmt);
+            mysqli_close($conn);
+        ?>
+            <form action="../ocupar/mesa.php" method="POST" name="formulario">
+                <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
+                <input type="hidden" name="id_sala" value="<?php echo $idSala ?>">
+            </form>
+            <script language="JavaScript">
+                document.formulario.submit();
+            </script>
+        <?php
+
+        } catch (Exception $e) {
+            mysqli_rollback($conn);
+            mysqli_stmt_close($stmt);
+            mysqli_close($conn);
+            echo "Error al actualizar la mesa: " . $e->getMessage();
         }
     } else {
         mysqli_autocommit($conn, false);
@@ -109,10 +164,10 @@ if (isset($_SESSION['id_camarero'])) {
                 mysqli_stmt_close($stmtLimitSillas);
             }
 
-            $sql = "UPDATE mesa SET libre = ?, num_sillas = ? WHERE id_mesa = ?";
+            $sql = "UPDATE mesa SET id_estado = ?, num_sillas = ? WHERE id_mesa = ?";
             $stmt = mysqli_stmt_init($conn);
             mysqli_stmt_prepare($stmt, $sql);
-            $reservado = 0;
+            $reservado = 1;
             mysqli_stmt_bind_param($stmt, 'ssi', $reservado, $num_sillas, $idMesa);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);

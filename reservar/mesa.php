@@ -95,30 +95,37 @@ if (!isset($_POST['id_tipoSala'])) {
                     echo "<div class='col-md-$nuevoNumero mb-4'>";
                     echo "<div class='container_img'>";
                 ?>
-                    <form class="formImgComedor" action="./procesos/ocupar_mesa.php" method="POST">
-                        <input type="hidden" name="libre" value="<?php echo $fila['libre'] ?>">
+                    <form class="formImgComedor" action="./procesos/reservar_mesa.php" method="POST">
+                        <input type="hidden" name="libre" value="<?php echo $fila['id_estado'] ?>">
                         <input type="hidden" name="id_tipoSala" value="<?php echo $id ?>">
                         <input type="hidden" name="id_mesa" value="<?php echo $fila['id_mesa'] ?>">
                         <input type="hidden" name="id_sala" value="<?php echo $fila['id_sala'] ?>">
                         <input type="hidden" name="num_sillas_real" value="<?php echo $fila['num_sillas'] ?>">
                         <input type="hidden" name="num_sillas" value="<?php echo $fila['num_sillas'] ?>">
+                        <input type="hidden" name="fecha_inicio">
+                        <input type="hidden" name="fecha_fin">
                         <button class="botonImg" type="button" onclick='reservar(this.form)'><img class="imagen" src="../img/<?php
+                                                                                                                                if ($fila['id_estado'] == 3) {
+                                                                                                                                    $estado = 2;
+                                                                                                                                } else {
+                                                                                                                                    $estado = 1;
+                                                                                                                                }
                                                                                                                                 if ($fila['num_sillas'] == 1 || $fila['num_sillas'] == 2) {
-                                                                                                                                    echo $fila['libre'] .  2;
+                                                                                                                                    echo $estado .  2;
                                                                                                                                 } elseif ($fila['num_sillas'] == 3 || $fila['num_sillas'] == 4) {
-                                                                                                                                    echo $fila['libre'] . 4;
+                                                                                                                                    echo $estado . 4;
                                                                                                                                 } elseif ($fila['num_sillas'] == 5 || $fila['num_sillas'] == 6) {
-                                                                                                                                    echo $fila['libre'] . 6;
+                                                                                                                                    echo $estado . 6;
                                                                                                                                 } elseif ($fila['num_sillas'] == 7 || $fila['num_sillas'] == 8) {
-                                                                                                                                    echo $fila['libre'] . 8;
+                                                                                                                                    echo $estado . 8;
                                                                                                                                 } elseif ($fila['num_sillas'] == 9 || $fila['num_sillas'] == 10) {
-                                                                                                                                    echo $fila['libre'] . 10;
+                                                                                                                                    echo $estados . 10;
                                                                                                                                 }
                                                                                                                                 ?>.png" alt=""></button>
                     </form>
                 <?php
                     echo "</div>";
-                    echo "<label class='labelTipo'> Nº Sillas: " . $fila['num_sillas'] . "</label>";
+                    echo "<label class='labelTipo'>Nº mesa: {$fila['id_mesa']}, Nº Sillas: {$fila['num_sillas']}</label>";
                     echo "</div>";
                 }
 
@@ -131,27 +138,53 @@ if (!isset($_POST['id_tipoSala'])) {
             function reservar(form) {
                 Swal.fire({
                     title: "Reservar la mesa para: " + form.num_sillas.value + " ocupantes?",
-                    text: "cambia el número de sillas aqui: ",
+                    text: "Cambia el número de sillas aquí:",
                     icon: "warning",
                     input: "text",
                     inputValue: form.num_sillas.value,
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Confirmar"
+                    confirmButtonText: "Confirmar",
+                    html: `
+                            <label for="fecha_inicio">Fecha de inicio:</label>
+                            <input type="datetime-local" id="fecha_inicio" class="swal2-input" required>
+                            
+                            <label for="fecha_fin">Fecha de fin:</label>
+                            <input type="datetime-local" id="fecha_fin" class="swal2-input" required>
+                        `,
+                    preConfirm: () => {
+                        numSillas = parseInt(form.num_sillas.value);
+                        fechaInicio = document.getElementById('fecha_inicio').value;
+                        fechaFin = document.getElementById('fecha_fin').value;
+
+                        if (numSillas < 2 || numSillas > 10) {
+                            Swal.showValidationMessage("El número de sillas debe estar entre 2 y 10.");
+                            return false;
+                        }
+
+                        if (fechaInicio && fechaFin && new Date(fechaFin) < new Date(fechaInicio)) {
+                            Swal.showValidationMessage("La fecha de fin no puede ser anterior a la fecha de inicio.");
+                            return false;
+                        }
+
+                        if (!fechaInicio || !fechaFin) {
+                            Swal.showValidationMessage('Por favor, introduce tanto la fecha de inicio como la de fin');
+                            return false;
+                        }
+
+                        return {
+                            num_sillas: numSillas,
+                            fecha_inicio: fechaInicio,
+                            fecha_fin: fechaFin
+                        };
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        if (result.value <= 10 && result.value >= 2) {
-                            form.num_sillas.value = result.value;
-                            form.submit();
-                        } else {
-                            Swal.fire({
-                                title: "Limite es 10!",
-                                text: "No puedes pedir mas de 10 sillas",
-                                icon: "warning",
-                                confirmButtonText: "Aceptar"
-                            });
-                        }
+                        form.num_sillas.value = result.value.num_sillas;
+                        form.fecha_inicio.value = result.value.fecha_inicio;
+                        form.fecha_fin.value = result.value.fecha_fin;
+                        form.submit();
                     }
                 });
             }
